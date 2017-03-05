@@ -7,9 +7,9 @@
  * Created on 2017-02-23
  */
 
-
 #include <xc.h>
 #include <stdint.h>
+#include <pic16f18325.h>
 
 // PIC16F18325 Configuration Bit Settings
 // CONFIG1
@@ -39,62 +39,107 @@
 #define _XTAL_FREQ 32000000
 
 //Enable N-FET on pin 13, RA0
+#define ENABLE_TRIS TRISAbits.TRISA0
+#define ENABLE_PIN PORTAbits.RA0
 #define ENABLE_PORT PORTA
-#define ENABLE_TRIS TRISA
+#define ENABLE_VARIABLE portA
 #define ENABLE_MASK 0b00000001
 
+//Output Channel 1 on pin 12, RA1
+#define OUTPUT1_TRIS TRISAbits.TRISA1
+#define OUTPUT1_PIN PORTAbits.RA1
+#define OUTPUT1_PORT PORTA
+#define OUTPUT1_VARIABLE portA
+#define OUTPUT1_MASK 0b00000010
+
+//Output Channel 2 on pin 11, RA2
+#define OUTPUT2_TRIS TRISAbits.TRISA2
+#define OUTPUT2_PIN PORTAbits.RA2
+#define OUTPUT2_PORT PORTA
+#define OUTPUT2_VARIABLE portA
+#define OUTPUT2_MASK 0b00000100
+
+//Output Channel 3 on pin 10, RC0
+#define OUTPUT3_TRIS TRISCbits.TRISC0
+#define OUTPUT3_PIN PORTCbits.RC0
+#define OUTPUT3_PORT PORTC
+#define OUTPUT3_VARIABLE portC
+#define OUTPUT3_MASK 0b00000001
+
+//Output Channel 4 on pin 9, RC1
+#define OUTPUT4_TRIS TRISCbits.TRISC1
+#define OUTPUT4_PIN PORTCbits.RC1
+#define OUTPUT4_PORT PORTC
+#define OUTPUT4_VARIABLE portC
+#define OUTPUT4_MASK 0b00000001
+
+//Encoder 1 input A on RA4 / pin 3
+#define ENCODER1_A_TRIS TRISAbits.TRISA4
+#define ENCODER1_A_ANSEL ANSELAbits.ANSA4
+#define ENCODER1_A_PIN PORTAbits.RA4
+#define ENCODER1_A_RISING IOCAPbits.IOCAP4
+#define ENCODER1_A_FALLING IOCANbits.IOCAN4
+#define ENCODER1_A_FLAG IOCAFbits.IOCAF4
+
+//Encoder 1 input B on RC4 / pin 6
+#define ENCODER1_B_TRIS TRISCbits.TRISC4
+#define ENCODER1_B_ANSEL ANSELCbits.ANSC4
+#define ENCODER1_B_PIN PORTCbits.RC4
+#define ENCODER1_B_RISING IOCCPbits.IOCCP4
+#define ENCODER1_B_FALLING IOCCNbits.IOCCN4
+#define ENCODER1_B_FLAG IOCCFbits.IOCCF4
+
+//Encoder 1 input PB on RC5 / pin 5
+#define ENCODER1_PB_TRIS TRISCbits.TRISC5
+#define ENCODER1_PB_ANSEL ANSELCbits.ANSC5
+#define ENCODER1_PB_PIN PORTCbits.RC5
+#define ENCODER1_PB_RISING IOCCPbits.IOCCP5
+#define ENCODER1_PB_FALLING IOCCNbits.IOCCN5
+#define ENCODER1_PB_FLAG IOCCFbits.IOCCF5
+
+//Encoder 2 input A on RC3 / pin 7
+#define ENCODER2_A_TRIS TRISCbits.TRISC3
+#define ENCODER2_A_ANSEL ANSELCbits.ANSC3
+#define ENCODER2_A_PIN PORTCbits.RC3
+#define ENCODER2_A_RISING IOCCPbits.IOCCP3
+#define ENCODER2_A_FALLING IOCCNbits.IOCCN3
+#define ENCODER2_A_FLAG IOCCFbits.IOCCF3
+
+//Encoder 2 input B on RA5 / pin 2
+#define ENCODER2_B_TRIS TRISAbits.TRISA5
+#define ENCODER2_B_ANSEL ANSELAbits.ANSA5
+#define ENCODER2_B_PIN PORTAbits.RA5
+#define ENCODER2_B_RISING IOCAPbits.IOCAP5
+#define ENCODER2_B_FALLING IOCANbits.IOCAN5
+#define ENCODER2_B_FLAG IOCAFbits.IOCAF5
+
+//Encoder 2 input PB on RC2 / pin 8
+#define ENCODER2_PB_TRIS TRISCbits.TRISC2
+#define ENCODER2_PB_ANSEL ANSELCbits.ANSC2
+#define ENCODER2_PB_PIN PORTCbits.RC2
+#define ENCODER2_PB_RISING IOCCPbits.IOCCP2
+#define ENCODER2_PB_FALLING IOCCNbits.IOCCN2
+#define ENCODER2_PB_FLAG IOCCFbits.IOCCF2
+
+
+//Global variables
+uint8_t portA = 0x00;
+uint8_t portC = 0x00;
+uint16_t channel_1_dutycycle = 0;
+uint16_t channel_2_dutycycle = 0;
+uint16_t channel_3_dutycycle = 0;
+uint16_t channel_4_dutycycle = 0;
+
+//Function prototypes
+static void output1_on(void);
+static void output1_off(void);
+static void output2_on(void);
+static void output2_off(void);
+
+//enum
+
+
 /*
-//LED on pin 9, RC1
-#define LED_PORT PORTC
-#define LED_TRIS TRISC
-#define LED_MASK 0b00000010
-
-//PWM on pin 2, RA5
-#define PWM_PORT PORTA
-#define PWM_TRIS TRISA
-#define PWM_MASK 0b00100000
-
-//Tach on pin3, RA4
-#define TACH_PORT PORTA
-#define TACH_TRIS TRISA
-#define TACH_ANSEL ANSELA
-#define TACH_MASK 0b0010000
-
-//Temperature sensor on pin 8, RC2
-#define TEMPERATURE_PORT PORTC
-#define TEMPERATURE_TRIS TRISC
-#define TEMPERATURE_ANSEL ANSELC
-#define TEMPERATURE_MASK 0b00000100
-
-//Temperature debug output on pin 5, RC5
-#define DEBUGA_PORT PORTC
-#define DEBUGA_TRIS TRISC
-#define DEBUGA_MASK 0b00100000
-
-//Target speed debug output on pin 6, RC4
-#define DEBUGB_PORT PORTC
-#define DEBUGB_TRIS TRISC
-#define DEBUGB_MASK 0b00010000
-
-//Actual speed debug output on pin 7, RC3
-#define DEBUGC_PORT PORTC
-#define DEBUGC_TRIS TRISC
-#define DEBUGC_MASK 0b00001000
-
-//ADC averaging
-#define ADC_AVERAGE_SHIFT 5
-#define ADC_AVERAGE_COUNT ((1<<ADC_AVERAGE_SHIFT) - 1)
-#define ADC_AVERAGE_ADD (ADC_AVERAGE_COUNT/2)
-
-//Duty cycle calculation
-#define STARTUP_DUTYCYCLE 160
-#define DUTY_CYCLE_MIN 40
-#define DUTY_CYCLE_MAX 320
-#define FAN_SPEED_MIN 150 
-#define FAN_SPEED_MAX 900
-#define FAN_SPEED_SLOPE 3
-#define FAN_TEMPERATURE_THRESHOLD 300
-
 //Temperature measurement
 uint8_t adc_count;
 uint32_t adc_sum;
@@ -119,75 +164,137 @@ uint16_t target_fan_speed; //in 10 revolutions per minute, e.g. 450=4500rpm
  * 
  * */
 
-void interrupt ISR(void)
-{ 
-    uint16_t adc_value;
-    /*
-    
-    if(PIR1) //Timer 6 overflow interrupt
+void interrupt _isr(void)
+{
+    //Encoder 1
+    if(ENCODER1_A_FLAG)
     {
-      //LED on time is proportional to target_fan_speed / FAN_SPEED_MAX
-      if(led_count==0)
-      {
-         LED_PORT |= LED_MASK;
-      }
-      if(led_count==(target_fan_speed>>2))
-      {
-         LED_PORT &= ~LED_MASK;  
-      }
-      ++led_count;
-      if(led_count==FAN_SPEED_MAX>>2)
-      {
-          led_count = 0;
-      }
+        if(!ENCODER1_B_PIN)
+        {
+            //++os.encoderCount;
+            output1_on();
+        }
+        ENCODER1_A_FLAG;
+    }   
+    if(ENCODER1_B_FLAG)
+    {
+        if(!ENCODER1_A_PIN)
+        {
+            //--os.encoderCount;
+            output1_off();
+        }
+        ENCODER1_B_FLAG;
+    }
+    //Encoder 2
+    if(ENCODER2_A_FLAG)
+    {
+        if(!ENCODER2_B_PIN)
+        {
+            //++os.encoderCount;
+            output2_on();
+        }
+        ENCODER2_A_FLAG;
+    }   
+    if(ENCODER2_B_FLAG)
+    {
+        if(!ENCODER2_A_PIN)
+        {
+            //--os.encoderCount;
+            output2_off();
+        }
+        ENCODER2_B_FLAG;
+    } 
+}
 
-      //Read result of ADC conversion
-      adc_value = ADRESH;
-      adc_value <<= 8;
-      adc_value |= ADRESL;
-      //Start a new conversion
-      ADCON0 |= 0b00000010;
-      //Add current value to sum
-      adc_sum += adc_value;
-      ++adc_count;
-      if(adc_count==ADC_AVERAGE_COUNT)
-      {
-         adc_sum += ADC_AVERAGE_ADD;
-         //10bit ADC with 1.024V reference -> Voltage (in mV) = ADC reading
-         adc_voltage = (uint16_t)(adc_sum >> ADC_AVERAGE_SHIFT);
-         //LM35 output is 10mV per degree centigrade -> temperature = adc_voltage
-         temperature = adc_voltage;
-         adc_sum = 0;
-         adc_count = 0;
-         ready = 1;
-      }
-      //Clear Interrupt Flag
-      PIR2 &= 0b01111111;
-    } 
+static void pwm_init(void)
+{
     
-    if(PIR4&0b00000001) //Capture interrupt
-    {
-      //Save captured timer values
-      tach_capture_0 = tach_capture_1;
-      tach_capture_1 = CCPR1H;
-      tach_capture_1 <<= 8;
-      tach_capture_1 |= CCPR1L;
-      if(tach_capture_1!=tach_capture_0)
-      {
-        tach_measurement = tach_capture_1 - tach_capture_0;
-      }
-      
-      //Clear Interrupt Flag
-      PIR4 &= 0b11111110;
-    } 
-    */
+}
+
+static void encoder_init(void)
+{
+    //All encoder signals as digital inputs
+    ENCODER1_A_TRIS = 1;
+    ENCODER1_A_ANSEL = 0;
+    ENCODER1_B_TRIS = 1;
+    ENCODER1_B_ANSEL = 0;
+    ENCODER1_PB_TRIS = 1;
+    ENCODER1_PB_ANSEL = 0;
+    ENCODER2_A_TRIS = 1;
+    ENCODER2_A_ANSEL = 0;
+    ENCODER2_B_TRIS = 1;
+    ENCODER2_B_ANSEL = 0;
+    ENCODER2_PB_TRIS = 1;
+    ENCODER2_PB_ANSEL = 0;
+    
+    //Clear all interrupt flags
+    ENCODER1_A_FLAG = 0;
+    ENCODER1_B_FLAG = 0;
+    ENCODER2_A_FLAG = 0;
+    ENCODER2_B_FLAG = 0;
+    
+    //Enable interrupts on rising edges
+    ENCODER1_A_RISING = 1;
+    ENCODER1_B_RISING = 1;
+    ENCODER2_A_RISING = 1;
+    ENCODER2_B_RISING = 1;
+    
+    //Enable interrupt-on-change interrupts
+    PIE0bits.IOCIE = 1;
+    
+    //Enable peripheral interrupts
+    INTCONbits.PEIE = 1;
+    
+    //Enable global interrupts
+    INTCONbits.GIE = 1;
+}
+
+static void output1_on(void)
+{
+    OUTPUT1_VARIABLE |= OUTPUT1_MASK;
+    OUTPUT1_PORT = OUTPUT1_VARIABLE;
+}
+
+static void output1_off(void)
+{
+    OUTPUT1_VARIABLE &= ~OUTPUT1_MASK;
+    OUTPUT1_PORT = OUTPUT1_VARIABLE;   
+}
+
+static void output2_on()
+{
+    OUTPUT2_VARIABLE |= OUTPUT2_MASK;
+    OUTPUT2_PORT = OUTPUT2_VARIABLE;
+}
+
+static void output2_off()
+{
+    OUTPUT2_VARIABLE &= ~OUTPUT2_MASK;
+    OUTPUT2_PORT = OUTPUT2_VARIABLE;   
 }
 
 void init(void)
 {
-    //Enable as output
-    ENABLE_TRIS &= ~ENABLE_MASK;
-    ENABLE_PORT |= ENABLE_MASK;
+    //Configure pin 13 as output and drive it high immediately
+    //This enables the N-FET and ensures power stays on
+    ENABLE_TRIS = 0;
+    ENABLE_PIN = 1;
+    ENABLE_VARIABLE |= ENABLE_MASK;
+    
+    //Configure output pins
+    OUTPUT1_TRIS = 0;
+    OUTPUT2_TRIS = 0;
+    OUTPUT3_TRIS = 0;
+    OUTPUT4_TRIS = 0;
+    
+    //output1_on();
+    //output2_on();
+    
+    //Initialize PWM
+    pwm_init();
+    
+    //Enable encoder
+    encoder_init();
     
     /*
     //Temperature measurement
@@ -301,7 +408,7 @@ void main(void)
         ++count;
         if(count==50)
         {
-            ENABLE_PORT &= ~ENABLE_MASK;
+            ENABLE_PIN = 0;
             count = 0;
         }
         /*
