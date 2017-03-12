@@ -1,0 +1,66 @@
+/* 
+ * File:   encoder.h
+ * Author: Luke
+ *
+ * Created on 12. März 2017, 20:05
+ */
+
+#ifndef ENCODER_H
+#define	ENCODER_H
+
+#define ENCODER_PEC09_TOP
+
+
+//Encoder 1 input A on RA4 / pin 3
+#define ENCODER1_A_TRIS TRISAbits.TRISA4
+#define ENCODER1_A_ANSEL ANSELAbits.ANSA4
+#define ENCODER1_A_PIN PORTAbits.RA4
+#define ENCODER1_A_RISING IOCAPbits.IOCAP4
+#define ENCODER1_A_FALLING IOCANbits.IOCAN4
+#define ENCODER1_A_FLAG IOCAFbits.IOCAF4
+
+//Encoder 1 input B on RC4 / pin 6
+#define ENCODER1_B_TRIS TRISCbits.TRISC4
+#define ENCODER1_B_ANSEL ANSELCbits.ANSC4
+#define ENCODER1_B_PIN PORTCbits.RC4
+#define ENCODER1_B_RISING IOCCPbits.IOCCP4
+#define ENCODER1_B_FALLING IOCCNbits.IOCCN4
+#define ENCODER1_B_FLAG IOCCFbits.IOCCF4
+
+//Encoder 1 input PB on RC5 / pin 5
+#define ENCODER1_PB_TRIS TRISCbits.TRISC5
+#define ENCODER1_PB_ANSEL ANSELCbits.ANSC5
+#define ENCODER1_PB_PIN PORTCbits.RC5
+#define ENCODER1_PB_RISING IOCCPbits.IOCCP5
+#define ENCODER1_PB_FALLING IOCCNbits.IOCCN5
+#define ENCODER1_PB_FLAG IOCCFbits.IOCCF5
+
+//Encoder 2 input A on RC3 / pin 7
+#define ENCODER2_A_TRIS TRISCbits.TRISC3
+#define ENCODER2_A_ANSEL ANSELCbits.ANSC3
+#define ENCODER2_A_PIN PORTCbits.RC3
+#define ENCODER2_A_RISING IOCCPbits.IOCCP3
+#define ENCODER2_A_FALLING IOCCNbits.IOCCN3
+#define ENCODER2_A_FLAG IOCCFbits.IOCCF3
+
+//Encoder 2 input B on RA5 / pin 2
+#define ENCODER2_B_TRIS TRISAbits.TRISA5
+#define ENCODER2_B_ANSEL ANSELAbits.ANSA5
+#define ENCODER2_B_PIN PORTAbits.RA5
+#define ENCODER2_B_RISING IOCAPbits.IOCAP5
+#define ENCODER2_B_FALLING IOCANbits.IOCAN5
+#define ENCODER2_B_FLAG IOCAFbits.IOCAF5
+
+//Encoder 2 input PB on RC2 / pin 8
+#define ENCODER2_PB_TRIS TRISCbits.TRISC2
+#define ENCODER2_PB_ANSEL ANSELCbits.ANSC2
+#define ENCODER2_PB_PIN PORTCbits.RC2
+#define ENCODER2_PB_RISING IOCCPbits.IOCCP2
+#define ENCODER2_PB_FALLING IOCCNbits.IOCCN2
+#define ENCODER2_PB_FLAG IOCCFbits.IOCCF2
+
+void encoder_init(void);
+void encoder_isr(void);
+
+#endif	/* ENCODER_H */
+
