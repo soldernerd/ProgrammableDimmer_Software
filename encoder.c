@@ -4,8 +4,8 @@
 #include "encoder.h"
 
 //External variables
-extern int8_t encoder1_count = 0;
-extern int8_t encoder2_count = 0;
+extern int8_t encoder1_count;
+extern int8_t encoder2_count;
 
 void encoder_init(void)
 {

@@ -2,6 +2,7 @@
 #include <xc.h>
 #include <stdint.h>
 #include "pwm.h"
+#include "config.h"
 
 uint16_t channel_1_dutycycle = 0;
 uint16_t channel_2_dutycycle = 0;
@@ -22,7 +23,7 @@ void pwm_init(void)
     
     //Configure output1 using CCP1, Timer 2
     PR2 = 0xFF; // 10 bits resolution
-    TMR2 = 00; // Start at zero
+    TMR2 = TIMER_2_STARTING_VALUE;
     T2CONbits.T2CKPS = 0b00; //prescaler=1
     T2CONbits.T2OUTPS = 0b0000; //postscaler=1
     CCPTMRSbits.C1TSEL = 0b00; // Select timer 2 for CCP1 module
@@ -34,7 +35,7 @@ void pwm_init(void)
     
     //Configure output2 using CCP2, Timer 4
     PR4 = 0xFF; // 10 bits resolution
-    TMR4 = 85; // Start at 85, 120 degrees out-of-phase
+    TMR4 = TIMER_4_STARTING_VALUE;
     T4CONbits.T4CKPS = 0b00; //prescaler=1
     T4CONbits.T4OUTPS = 0b0000; //postscaler=1
     CCPTMRSbits.C2TSEL = 0b10; // Select timer 4 for CCP2 module
@@ -46,7 +47,7 @@ void pwm_init(void)
     
     //Configure output3 using CCP3, Timer 6
     PR6 = 0xFF; // 10 bits resolution
-    TMR6 = 170; // Start at 170, 240 degrees out-of-phase
+    TMR6 = TIMER_6_STARTING_VALUE;
     T6CONbits.T6CKPS = 0b00; //prescaler=1
     T6CONbits.T6OUTPS = 0b0000; //postscaler=1
     CCPTMRSbits.C3TSEL = 0b11; // Select timer 6 for CCP3 module
@@ -86,6 +87,7 @@ uint16_t pwm_get_dutycycle(PwmChannel_t channel)
             return channel_4_dutycycle;
             break;
     }
+    return 0;
 }
 
 void pwm_set_dutycycle(PwmChannel_t channel, uint16_t dutycycle)
