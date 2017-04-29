@@ -36,16 +36,17 @@
 #define _XTAL_FREQ 32000000
 
 //Define the function the the dimmer should perform
-#define FUNCTION_DUALWHITE
+//#define FUNCTION_DUALWHITE
+#define FUNCTION_RGB
 
 //Define the time until turn-off in milliseconds
-#define TURN_OFF_DELAY 5000
+#define TURN_OFF_DELAY 3000
 
 //Define the type of encoders
 //#define ENCODER_PEC09_TOP
 #define ENCODER_PEC15_BOTTOM
 
-//Set phase shift between individual outputs according to function
+//Set parameters for dual white implementation
 #ifdef FUNCTION_DUALWHITE
     #define TIMER_2_STARTING_VALUE 0
     #define TIMER_4_STARTING_VALUE 128
@@ -58,6 +59,26 @@
     #define BRIGHTNESS_LEVEL_MIN_2 1
     #define BRIGHTNESS_LEVEL_MAX_2 (BRIGHTNESS_LEVEL_COUNT_2 - 1)
     #define BRIGHTNESS_LEVELS_2 {0,5,41,90,138,165,198,238,286,343,411,493,592,710,853,1023}
+#endif
+
+//Set parameters for rgb implementation
+#ifdef FUNCTION_RGB
+    #define TIMER_2_STARTING_VALUE 0
+    #define TIMER_4_STARTING_VALUE 58
+    #define TIMER_6_STARTING_VALUE 170
+    #define NUMBER_OF_COLORS 24
+    #define RGB_NEUTRAL_RED 255
+    #define RGB_NEUTRAL_GREEN 90
+    #define RGB_NEUTRAL_BLUE 50
+    #define BRIGHTNESS_LEVEL_COUNT 32
+    #define BRIGHTNESS_LEVEL_MIN 1
+    #define BRIGHTNESS_LEVEL_MAX (BRIGHTNESS_LEVEL_COUNT - 1)
+    #define BRIGHTNESS_LEVELS {0,11,12,14,16,19,22,25,29,34,40,47,55,64,74,87,101,118,138,161,187,219,255,298,347,405,473,552,644,751,877,1023}
+    #define OUTPUT_RED PWM_CHANNEL_1
+    #define OUTPUT_GREEN PWM_CHANNEL_2
+    #define OUTPUT_BLUE PWM_CHANNEL_3
+    //#define OUTPUT_WHITE PWM_CHANNEL_4
+
 #endif
 
 

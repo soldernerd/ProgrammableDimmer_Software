@@ -1,8 +1,10 @@
+#include "config.h"
+
+#ifdef FUNCTION_DUALWHITE
 
 #include <xc.h>
 #include <stdint.h>
 #include "function_dualwhite.h"
-#include "config.h"
 #include "pwm.h"
 
 //External variables
@@ -143,6 +145,8 @@ void main_loop_dualwhite(void)
                 //Save last brightness to eeprom
                 eeprom_write(EEPROM_BRIGHTNESS_1_ADDRESS, brightness1_saved);
                 eeprom_write(EEPROM_BRIGHTNESS_2_ADDRESS, brightness2_saved);
+                //Wait until data is definitely written
+                __delay_ms(10);
                 //Disable power supply
                 turn_off();
             }
@@ -155,3 +159,5 @@ void main_loop_dualwhite(void)
         __delay_ms(1);
     }
 }
+
+#endif	/* FUNCTION_DUALWHITE */
