@@ -35,8 +35,10 @@
 //Global variables
 uint8_t portA = 0x00;
 uint8_t portC = 0x00;
-int8_t encoder1_count = 0;
-int8_t encoder2_count = 0;
+int8_t encoder1_count;
+uint8_t encoder1_button;
+int8_t encoder2_count;
+uint8_t encoder2_button;
 
 //Function prototypes
 void turn_on(void);

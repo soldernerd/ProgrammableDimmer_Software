@@ -8,6 +8,9 @@
 #ifndef FUNCTION_DUALWHITE_H
 #define	FUNCTION_DUALWHITE_H
 
+#define EEPROM_BRIGHTNESS_1_ADDRESS 0x00
+#define EEPROM_BRIGHTNESS_2_ADDRESS 0x01
+
 void main_loop_dualwhite(void);
 
 #endif	/* FUNCTION_DUALWHITE_H */

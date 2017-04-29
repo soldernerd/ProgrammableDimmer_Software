@@ -7,75 +7,151 @@
 
 //External variables
 extern int8_t encoder1_count;
+extern uint8_t encoder1_button;
 extern int8_t encoder2_count;
+extern uint8_t encoder2_button;
 
 void main_loop_dualwhite(void)
 {
-    uint16_t brightness_levels[16] = {0,5,41,90,138,165,198,238,286,343,411,493,592,710,853,1023};
-    uint8_t brightness1 = 0;
-    uint8_t brightness2 = 0;
-    uint8_t brightness3 = 0;
-    uint8_t brightness4 = 0;
-    int16_t count = 0;
+    //Initialize brightness lookup arrays
+    uint16_t brightness_levels1[BRIGHTNESS_LEVEL_COUNT_1] = BRIGHTNESS_LEVELS_1;
+    uint16_t brightness_levels2[BRIGHTNESS_LEVEL_COUNT_2] = BRIGHTNESS_LEVELS_2;
+    //Restore brightness 1 from eeprom
+    uint8_t brightness1 = eeprom_read(EEPROM_BRIGHTNESS_1_ADDRESS);
+    if(brightness1<BRIGHTNESS_LEVEL_MIN_1 || brightness1>BRIGHTNESS_LEVEL_MAX_1)
+    {
+        brightness1 = BRIGHTNESS_LEVEL_MIN_1;
+        eeprom_write(EEPROM_BRIGHTNESS_1_ADDRESS, brightness1);
+    }
+    uint8_t brightness1_saved = brightness1;
+    //Restore brightness 2 from eeprom
+    uint8_t brightness2 = eeprom_read(EEPROM_BRIGHTNESS_2_ADDRESS);
+    if(brightness2<BRIGHTNESS_LEVEL_MIN_2 || brightness2>BRIGHTNESS_LEVEL_MAX_2)
+    {
+        brightness2 = BRIGHTNESS_LEVEL_MIN_2;
+        eeprom_write(EEPROM_BRIGHTNESS_2_ADDRESS, brightness2);
+    }
+    uint8_t brightness2_saved = brightness2;
+    int16_t off_count = 0;
+    
+    //Set dutycycle
+    pwm_set_dutycycle(PWM_CHANNEL_1, brightness_levels1[brightness1]);
+    pwm_set_dutycycle(PWM_CHANNEL_2, brightness_levels1[brightness1]);
+    pwm_set_dutycycle(PWM_CHANNEL_3, brightness_levels2[brightness2]);
+    pwm_set_dutycycle(PWM_CHANNEL_4, brightness_levels2[brightness2]);
     
     while(1)
     {
-        if(encoder1_count>0)
+        if(brightness1>=BRIGHTNESS_LEVEL_MIN_1)
         {
-            if(brightness1<15)
+            //Output 1, i.e. channels 1 & 2
+            if(encoder1_count>0)
             {
-                ++brightness1;
-                pwm_set_dutycycle(PWM_CHANNEL_1, brightness_levels[brightness1]);
-                pwm_set_dutycycle(PWM_CHANNEL_2, brightness_levels[brightness1]);
+                if(brightness1<BRIGHTNESS_LEVEL_MAX_1)
+                {
+                    ++brightness1;
+                    pwm_set_dutycycle(PWM_CHANNEL_1, brightness_levels1[brightness1]);
+                    pwm_set_dutycycle(PWM_CHANNEL_2, brightness_levels1[brightness1]);
+                }
+                encoder1_count = 0;
+            }   
+            if(encoder1_count<0)
+            {
+                if(brightness1>BRIGHTNESS_LEVEL_MIN_1)
+                {
+                    --brightness1;
+                    pwm_set_dutycycle(PWM_CHANNEL_1, brightness_levels1[brightness1]);
+                    pwm_set_dutycycle(PWM_CHANNEL_2, brightness_levels1[brightness1]);
+                }
+                encoder1_count = 0;
             }
-            encoder1_count = 0;
-        }   
-        if(encoder1_count<0)
+        }
+        
+        if(encoder1_button)
         {
-            if(brightness1>0)
+            if(brightness1==0)
             {
-                --brightness1;
-                pwm_set_dutycycle(PWM_CHANNEL_1, brightness_levels[brightness1]);
-                pwm_set_dutycycle(PWM_CHANNEL_2, brightness_levels[brightness1]);
+                //Output is currently off. Restore saved value and clear count
+                brightness1 = brightness1_saved;
+                encoder1_count = 0;
+            }    
+            else
+            {
+                //Output is currently on. Save value and turn output off
+                brightness1_saved = brightness1;
+                brightness1 = 0;
             }
-            encoder1_count = 0;
-        }  
+            //Clear button pressed flag
+            encoder1_button = 0;
+            //Set outputs
+            pwm_set_dutycycle(PWM_CHANNEL_1, brightness_levels1[brightness1]);
+            pwm_set_dutycycle(PWM_CHANNEL_2, brightness_levels1[brightness1]);
+        }
 
-        if(encoder2_count>0)
+        if(brightness2>=BRIGHTNESS_LEVEL_MIN_2)
         {
-            if(brightness3<15)
+            //Output 2, i.e. channels 3 & 4
+            if(encoder2_count>0)
             {
-                ++brightness3;
-                pwm_set_dutycycle(PWM_CHANNEL_3, brightness_levels[brightness3]);
-                pwm_set_dutycycle(PWM_CHANNEL_4, brightness_levels[brightness3]);
-            }
-            encoder2_count = 0;
-        }   
-        if(encoder2_count<0)
+                if(brightness2<BRIGHTNESS_LEVEL_MAX_2)
+                {
+                    ++brightness2;
+                    pwm_set_dutycycle(PWM_CHANNEL_3, brightness_levels2[brightness2]);
+                    pwm_set_dutycycle(PWM_CHANNEL_4, brightness_levels2[brightness2]);
+                }
+                encoder2_count = 0;
+            }   
+            if(encoder2_count<0)
+            {
+                if(brightness2>BRIGHTNESS_LEVEL_MIN_2)
+                {
+                    --brightness2;
+                    pwm_set_dutycycle(PWM_CHANNEL_3, brightness_levels2[brightness2]);
+                    pwm_set_dutycycle(PWM_CHANNEL_4, brightness_levels2[brightness2]);
+                }
+                encoder2_count = 0;
+            }    
+        }
+        
+        if(encoder2_button)
         {
-            if(brightness3>0)
+            if(brightness2==0)
             {
-                --brightness3;
-                pwm_set_dutycycle(PWM_CHANNEL_3, brightness_levels[brightness3]);
-                pwm_set_dutycycle(PWM_CHANNEL_4, brightness_levels[brightness3]);
+                //Output is currently off. Restore saved value and clear count
+                brightness2 = brightness2_saved;
+                encoder2_count = 0;
+            }    
+            else
+            {
+                //Output is currently on. Save value and turn output off
+                brightness2_saved = brightness2;
+                brightness2 = 0;
             }
-            encoder2_count = 0;
-        }    
-
-        __delay_ms(1);
+            //Clear button pressed flag
+            encoder2_button = 0;
+            //Set outputs
+            pwm_set_dutycycle(PWM_CHANNEL_3, brightness_levels2[brightness2]);
+            pwm_set_dutycycle(PWM_CHANNEL_4, brightness_levels2[brightness2]);
+        }
 
         //Turn off power supply after 5 seconds of inactivity
-        if(brightness1==0 && brightness2==0 && brightness3==0 && brightness4==0)
+        if(brightness1==0 && brightness2==0)
         {
-            ++count;
-            if(count==5000)
+            ++off_count;
+            if(off_count==TURN_OFF_DELAY)
             {
+                //Save last brightness to eeprom
+                eeprom_write(EEPROM_BRIGHTNESS_1_ADDRESS, brightness1_saved);
+                eeprom_write(EEPROM_BRIGHTNESS_2_ADDRESS, brightness2_saved);
+                //Disable power supply
                 turn_off();
             }
         }
         else
         {
-            count = 0;
+            off_count = 0;
         }
+        
+        __delay_ms(1);
     }
 }

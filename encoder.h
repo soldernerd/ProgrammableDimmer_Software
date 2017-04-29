@@ -8,7 +8,7 @@
 #ifndef ENCODER_H
 #define	ENCODER_H
 
-#define ENCODER_PEC09_TOP
+
 
 
 //Encoder 1 input A on RA4 / pin 3
