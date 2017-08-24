@@ -12,6 +12,9 @@
 #define EEPROM_COLOR_ADDRESS 0x01
 #define EEPROM_WHITE_ADDRESS 0x02
 
+//Function prototypes
+void turn_on(void);
+void turn_off(void);
 
 void main_loop_rgb(void);
 

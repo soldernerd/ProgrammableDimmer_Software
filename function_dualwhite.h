@@ -13,5 +13,9 @@
 
 void main_loop_dualwhite(void);
 
+//Function prototypes
+void turn_on(void);
+void turn_off(void);
+
 #endif	/* FUNCTION_DUALWHITE_H */
 

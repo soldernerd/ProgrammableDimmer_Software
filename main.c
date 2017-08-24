@@ -9,11 +9,12 @@
 
 #include <xc.h>
 #include <stdint.h>
-#include <pic16f18325.h>
+//#include <pic16f18325.h>
 
 #include "config.h"
 #include "encoder.h"
 #include "pwm.h"
+
 
 #ifdef FUNCTION_DUALWHITE
     #include "function_dualwhite.h"

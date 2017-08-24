@@ -46,6 +46,12 @@ void encoder_init(void)
     ENCODER2_B_RISING = 1;
     ENCODER2_PB_RISING = 1;
     
+    //Enable interrupts on falling edges
+    ENCODER1_A_FALLING = 1;
+    ENCODER1_B_FALLING = 1;
+    ENCODER2_A_FALLING = 1;
+    ENCODER2_B_FALLING = 1;
+    
     //Initialize variables
     encoder1_count = 0;
     encoder1_button = 0;
@@ -67,9 +73,13 @@ void encoder_isr(void)
     //Encoder 1
     if(ENCODER1_A_FLAG)
     {
-        if(!ENCODER1_B_PIN)
+        if(ENCODER1_A_PIN & !ENCODER1_B_PIN) //A rising while B low
         {
-            #ifdef ENCODER_PEC09_TOP
+            #ifdef ENCODER_PEC09_12DENT_TOP
+                if(encoder1_count>COUNT_MIN)
+                    --encoder1_count;
+            #endif
+            #ifdef ENCODER_PEC09_24DENT_TOP
                 if(encoder1_count>COUNT_MIN)
                     --encoder1_count;
             #endif
@@ -78,19 +88,37 @@ void encoder_isr(void)
                     ++encoder1_count;
             #endif  
         }
+        else if(!ENCODER1_A_PIN & ENCODER1_B_PIN) //A falling while B high
+        {
+            #ifdef ENCODER_PEC09_24DENT_TOP
+                if(encoder1_count>COUNT_MIN)
+                    --encoder1_count;
+            #endif 
+        }
         ENCODER1_A_FLAG = 0;
     }   
     if(ENCODER1_B_FLAG)
     {
-        if(!ENCODER1_A_PIN)
+        if(ENCODER1_B_PIN & !ENCODER1_A_PIN) //B rising while A low
         {
-            #ifdef ENCODER_PEC09_TOP
+            #ifdef ENCODER_PEC09_12DENT_TOP
+                if(encoder1_count<COUNT_MAX)
+                    ++encoder1_count;
+            #endif
+            #ifdef ENCODER_PEC09_24DENT_TOP
                 if(encoder1_count<COUNT_MAX)
                     ++encoder1_count;
             #endif
             #ifdef ENCODER_PEC15_BOTTOM
                 if(encoder1_count>COUNT_MIN)
                     --encoder1_count;
+            #endif
+        }
+        else if(!ENCODER1_B_PIN & ENCODER1_A_PIN) //B falling while A high
+        {
+            #ifdef ENCODER_PEC09_24DENT_TOP
+                if(encoder1_count<COUNT_MAX)
+                    ++encoder1_count;
             #endif
         }
         ENCODER1_B_FLAG = 0;
@@ -100,27 +128,43 @@ void encoder_isr(void)
         encoder1_button = 1;
         ENCODER1_PB_FLAG = 0;
     }
+    
     //Encoder 2
     if(ENCODER2_A_FLAG)
     {
-        if(!ENCODER2_B_PIN)
+        if(ENCODER2_A_PIN & !ENCODER2_B_PIN) //A rising while B low
         {
-            #ifdef ENCODER_PEC09_TOP
+            #ifdef ENCODER_PEC09_12DENT_TOP
+                if(encoder2_count>COUNT_MIN)
+                    --encoder2_count;
+            #endif
+            #ifdef ENCODER_PEC09_24DENT_TOP
                 if(encoder2_count>COUNT_MIN)
                     --encoder2_count;
             #endif
             #ifdef ENCODER_PEC15_BOTTOM
                 if(encoder2_count<COUNT_MAX)
                     ++encoder2_count;
-            #endif
+            #endif  
+        }
+        else if(!ENCODER2_A_PIN & ENCODER2_B_PIN) //A falling while B high
+        {
+            #ifdef ENCODER_PEC09_24DENT_TOP
+                if(encoder2_count>COUNT_MIN)
+                    --encoder2_count;
+            #endif 
         }
         ENCODER2_A_FLAG = 0;
     }   
     if(ENCODER2_B_FLAG)
     {
-        if(!ENCODER2_A_PIN)
+        if(ENCODER2_B_PIN & !ENCODER2_A_PIN) //B rising while A low
         {
-            #ifdef ENCODER_PEC09_TOP
+            #ifdef ENCODER_PEC09_12DENT_TOP
+                if(encoder2_count<COUNT_MAX)
+                    ++encoder2_count;
+            #endif
+            #ifdef ENCODER_PEC09_24DENT_TOP
                 if(encoder2_count<COUNT_MAX)
                     ++encoder2_count;
             #endif
@@ -129,11 +173,18 @@ void encoder_isr(void)
                     --encoder2_count;
             #endif
         }
+        else if(!ENCODER2_B_PIN & ENCODER2_A_PIN) //B falling while A high
+        {
+            #ifdef ENCODER_PEC09_24DENT_TOP
+                if(encoder2_count<COUNT_MAX)
+                    ++encoder2_count;
+            #endif
+        }
         ENCODER2_B_FLAG = 0;
-    } 
+    }
     if(ENCODER2_PB_FLAG)
     {
-        encoder2_button = 1;
+        encoder2_button = 2;
         ENCODER2_PB_FLAG = 0;
     }
 }

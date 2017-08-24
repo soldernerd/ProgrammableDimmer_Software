@@ -36,29 +36,30 @@
 #define _XTAL_FREQ 32000000
 
 //Define the function the the dimmer should perform
-//#define FUNCTION_DUALWHITE
-#define FUNCTION_RGB
+#define FUNCTION_DUALWHITE
+//#define FUNCTION_RGB
 
 //Define the time until turn-off in milliseconds
 #define TURN_OFF_DELAY 3000
 
 //Define the type of encoders
-//#define ENCODER_PEC09_TOP
-#define ENCODER_PEC15_BOTTOM
+//#define ENCODER_PEC09_12DENT_TOP
+#define ENCODER_PEC09_24DENT_TOP
+//#define ENCODER_PEC15_BOTTOM
 
 //Set parameters for dual white implementation
 #ifdef FUNCTION_DUALWHITE
     #define TIMER_2_STARTING_VALUE 0
     #define TIMER_4_STARTING_VALUE 128
     #define TIMER_6_STARTING_VALUE 128
-    #define BRIGHTNESS_LEVEL_COUNT_1 16
+    #define BRIGHTNESS_LEVEL_COUNT_1 20
     #define BRIGHTNESS_LEVEL_MIN_1 1
     #define BRIGHTNESS_LEVEL_MAX_1 (BRIGHTNESS_LEVEL_COUNT_1 - 1)
-    #define BRIGHTNESS_LEVELS_1 {0,5,41,90,138,165,198,238,286,343,411,493,592,710,853,1023}
-    #define BRIGHTNESS_LEVEL_COUNT_2 16
+    #define BRIGHTNESS_LEVELS_1 {0,5,8,12,20,33,54,90,138,165,198,238,286,343,411,493,592,710,853,1023}
+    #define BRIGHTNESS_LEVEL_COUNT_2 20
     #define BRIGHTNESS_LEVEL_MIN_2 1
     #define BRIGHTNESS_LEVEL_MAX_2 (BRIGHTNESS_LEVEL_COUNT_2 - 1)
-    #define BRIGHTNESS_LEVELS_2 {0,5,41,90,138,165,198,238,286,343,411,493,592,710,853,1023}
+    #define BRIGHTNESS_LEVELS_2 {0,5,8,12,20,33,54,90,138,165,198,238,286,343,411,493,592,710,853,1023}
 #endif
 
 //Set parameters for rgb implementation
