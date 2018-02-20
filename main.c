@@ -24,6 +24,10 @@
     #include "function_rgb.h"
 #endif
 
+#ifdef FUNCTION_FREQUENCY
+    #include "function_frequency.h"
+#endif
+
 
 
 //Enable N-FET on pin 13, RA0
@@ -88,5 +92,9 @@ void main(void)
 
     #ifdef FUNCTION_RGB
         main_loop_rgb();
+    #endif
+
+    #ifdef FUNCTION_FREQUENCY
+        main_loop_frequency();
     #endif
 }

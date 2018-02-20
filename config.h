@@ -36,19 +36,28 @@
 #define _XTAL_FREQ 32000000
 
 //Define the function the the dimmer should perform
-#define FUNCTION_DUALWHITE
+//#define FUNCTION_DUALWHITE
 //#define FUNCTION_RGB
+# define FUNCTION_FREQUENCY
 
 //Define the time until turn-off in milliseconds
 #define TURN_OFF_DELAY 3000
 
 //Define the type of encoders
-//#define ENCODER_PEC09_12DENT_TOP
-#define ENCODER_PEC09_24DENT_TOP
+#define ENCODER_PEC09_12DENT_TOP
+//#define ENCODER_PEC09_24DENT_TOP
 //#define ENCODER_PEC15_BOTTOM
+
+#define SOURCE_TIMER_2 0b00
+#define SOURCE_TIMER_4 0b10
+#define SOURCE_TIMER_6 0b11
 
 //Set parameters for dual white implementation
 #ifdef FUNCTION_DUALWHITE
+    #define OUTPUT_1_TIMER_SOURCE SOURCE_TIMER_2
+    #define OUTPUT_2_TIMER_SOURCE SOURCE_TIMER_4
+    #define OUTPUT_3_TIMER_SOURCE SOURCE_TIMER_6
+    #define OUTPUT_4_TIMER_SOURCE SOURCE_TIMER_2
     #define TIMER_2_STARTING_VALUE 0
     #define TIMER_4_STARTING_VALUE 128
     #define TIMER_6_STARTING_VALUE 128
@@ -64,6 +73,10 @@
 
 //Set parameters for rgb implementation
 #ifdef FUNCTION_RGB
+    #define OUTPUT_1_TIMER_SOURCE SOURCE_TIMER_2
+    #define OUTPUT_2_TIMER_SOURCE SOURCE_TIMER_4
+    #define OUTPUT_3_TIMER_SOURCE SOURCE_TIMER_6
+    #define OUTPUT_4_TIMER_SOURCE SOURCE_TIMER_2
     #define TIMER_2_STARTING_VALUE 0
     #define TIMER_4_STARTING_VALUE 58
     #define TIMER_6_STARTING_VALUE 170
@@ -79,7 +92,20 @@
     #define OUTPUT_GREEN PWM_CHANNEL_2
     #define OUTPUT_BLUE PWM_CHANNEL_3
     //#define OUTPUT_WHITE PWM_CHANNEL_4
+#endif
 
+//Set parameters for variable frequency implementation
+#ifdef FUNCTION_FREQUENCY
+    #define OUTPUT_1_TIMER_SOURCE SOURCE_TIMER_2
+    #define OUTPUT_2_TIMER_SOURCE SOURCE_TIMER_2
+    #define OUTPUT_3_TIMER_SOURCE SOURCE_TIMER_4
+    #define OUTPUT_4_TIMER_SOURCE SOURCE_TIMER_4
+    #define TIMER_2_STARTING_VALUE 0
+    #define TIMER_4_STARTING_VALUE 128
+    #define BRIGHTNESS_LEVEL_COUNT 20
+    #define BRIGHTNESS_LEVEL_MIN 1
+    #define BRIGHTNESS_LEVEL_MAX (BRIGHTNESS_LEVEL_COUNT - 1)
+    #define BRIGHTNESS_LEVELS {0,5,8,12,20,33,54,90,138,165,198,238,286,343,411,493,592,710,853,1023}
 #endif
 
 

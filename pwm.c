@@ -21,53 +21,68 @@ void pwm_init(void)
     OUTPUT4_TRIS = 0;
     OUTPUT4_PPS = CCP4_MODULE;
     
-    //Configure output1 using CCP1, Timer 2
+    //Configure output1 using CCP1
     PR2 = 0xFF; // 10 bits resolution
-    TMR2 = TIMER_2_STARTING_VALUE;
     T2CONbits.T2CKPS = 0b00; //prescaler=1
     T2CONbits.T2OUTPS = 0b0000; //postscaler=1
-    CCPTMRSbits.C1TSEL = 0b00; // Select timer 2 for CCP1 module
+    CCPTMRSbits.C1TSEL = OUTPUT_1_TIMER_SOURCE;
     CCP1CONbits.CCP1FMT = 1; //Left aligned
     CCP1CONbits.CCP1MODE = 0b1111; //PWM mode
     CCPR1H = 0x00; //Most significant bits
     CCPR1L = 0x00; //Least significant bits
     CCP1CONbits.CCP1EN = 1; //Module enabled
     
-    //Configure output2 using CCP2, Timer 4
+    //Configure output2 using CCP2
     PR4 = 0xFF; // 10 bits resolution
-    TMR4 = TIMER_4_STARTING_VALUE;
     T4CONbits.T4CKPS = 0b00; //prescaler=1
     T4CONbits.T4OUTPS = 0b0000; //postscaler=1
-    CCPTMRSbits.C2TSEL = 0b10; // Select timer 4 for CCP2 module
+    CCPTMRSbits.C2TSEL = OUTPUT_2_TIMER_SOURCE;
     CCP2CONbits.CCP2FMT = 1; //Left aligned
     CCP2CONbits.CCP2MODE = 0b1111; //PWM mode
     CCPR2H = 0x00; //Most significant bits
     CCPR2L = 0x00; //Least significant bits
     CCP2CONbits.CCP2EN = 1; //Module enabled
     
-    //Configure output3 using CCP3, Timer 6
+    //Configure output3 using CCP3
     PR6 = 0xFF; // 10 bits resolution
-    TMR6 = TIMER_6_STARTING_VALUE;
     T6CONbits.T6CKPS = 0b00; //prescaler=1
     T6CONbits.T6OUTPS = 0b0000; //postscaler=1
-    CCPTMRSbits.C3TSEL = 0b11; // Select timer 6 for CCP3 module
+    CCPTMRSbits.C3TSEL = OUTPUT_3_TIMER_SOURCE;
     CCP3CONbits.CCP3FMT = 1; //Left aligned
     CCP3CONbits.CCP3MODE = 0b1111; //PWM mode
     CCPR3H = 0x00; //Most significant bits
     CCPR3L = 0x00; //Least significant bits
     CCP3CONbits.CCP3EN = 1; //Module enabled
     
-    //Configure output3 using CCP4, Timer 2
-    CCPTMRSbits.C4TSEL = 0b00; // Select timer 2 for CCP4 module
+    //Configure output3 using CCP4
+    CCPTMRSbits.C4TSEL = OUTPUT_4_TIMER_SOURCE;
     CCP4CONbits.CCP4FMT = 1; //Left aligned
     CCP4CONbits.CCP4MODE = 0b1111; //PWM mode
     CCPR4H = 0x00; //Most significant bits
     CCPR4L = 0x00; //Least significant bits
     CCP4CONbits.CCP4EN = 1; //Module enabled
     
-    T2CONbits.TMR2ON = 1;
-    T4CONbits.TMR4ON = 1;
-    T6CONbits.TMR6ON = 1;
+    //Assign starting values to used timers
+    #ifdef TIMER_2_STARTING_VALUE
+        TMR2 = TIMER_2_STARTING_VALUE;
+    #endif
+    #ifdef TIMER_4_STARTING_VALUE
+        TMR4 = TIMER_4_STARTING_VALUE;
+    #endif    
+    #ifdef TIMER_6_STARTING_VALUE
+        TMR6 = TIMER_6_STARTING_VALUE;
+    #endif
+    
+    //Start used tmers
+    #ifdef TIMER_2_STARTING_VALUE
+        T2CONbits.TMR2ON = 1;
+    #endif
+    #ifdef TIMER_4_STARTING_VALUE
+        T4CONbits.TMR4ON = 1;
+    #endif    
+    #ifdef TIMER_6_STARTING_VALUE
+        T6CONbits.TMR6ON = 1;
+    #endif
 }
 
 uint16_t pwm_get_dutycycle(PwmChannel_t channel)
