@@ -32,13 +32,41 @@
 #pragma config CP = OFF         // User NVM Program Memory Code Protection bit (User NVM code protection disabled)
 #pragma config CPD = OFF        // Data NVM Memory Code Protection bit (Data NVM code protection disabled)
 
+//Lock and unlock peripheral pin select
+#define  PPSUnLock()    {INTCONbits.GIE = 0; PPSLOCK = 0x55; PPSLOCK = 0xAA; PPSLOCKbits.PPSLOCKED = 0; INTCONbits.GIE = 1;}
+#define  PPSLock() 		{INTCONbits.GIE = 0;PPSLOCK = 0x55; PPSLOCK = 0xAA; PPSLOCKbits.PPSLOCKED = 1; INTCONbits.GIE = 1;}
+
+//High and Low Byte macros
+#define LOW_BYTE(x) ((unsigned char)((x)&0xFF))
+#define HIGH_BYTE(x) ((unsigned char)(((x)>>8)&0xFF))
+
+//Output Channel 1 on pin 12, RA1
+#define OUTPUT1_TRIS TRISAbits.TRISA1
+#define OUTPUT1_PIN LATAbits.LATA1
+#define OUTPUT1_PPS RA1PPS
+
+//Output Channel 2 on pin 11, RA2
+#define OUTPUT2_TRIS TRISAbits.TRISA2
+#define OUTPUT2_PIN LATAbits.LATA2
+#define OUTPUT2_PPS RA2PPS
+
+//Output Channel 3 on pin 10, RC0
+#define OUTPUT3_TRIS TRISCbits.TRISC0
+#define OUTPUT3_PIN LATCbits.LATC0
+#define OUTPUT3_PPS RC0PPS
+
+//Output Channel 4 on pin 9, RC1
+#define OUTPUT4_TRIS TRISCbits.TRISC1
+#define OUTPUT4_PIN LATCbits.LATC1
+#define OUTPUT4_PPS RC1PPS
+
 //CPU Frequency
 #define _XTAL_FREQ 32000000
 
 //Define the function the the dimmer should perform
-//#define FUNCTION_DUALWHITE
+#define FUNCTION_DUALWHITE
 //#define FUNCTION_RGB
-# define FUNCTION_FREQUENCY
+//#define FUNCTION_FREQUENCY
 
 //Define the time until turn-off in milliseconds
 #define TURN_OFF_DELAY 3000
@@ -69,7 +97,7 @@
     #define BRIGHTNESS_LEVEL_MIN_2 1
     #define BRIGHTNESS_LEVEL_MAX_2 (BRIGHTNESS_LEVEL_COUNT_2 - 1)
     #define BRIGHTNESS_LEVELS_2 {0,5,8,12,20,33,54,90,138,165,198,238,286,343,411,493,592,710,853,1023}
-#endif
+#endif /*FUNCTION_DUALWHITE*/
 
 //Set parameters for rgb implementation
 #ifdef FUNCTION_RGB
@@ -92,7 +120,7 @@
     #define OUTPUT_GREEN PWM_CHANNEL_2
     #define OUTPUT_BLUE PWM_CHANNEL_3
     //#define OUTPUT_WHITE PWM_CHANNEL_4
-#endif
+#endif /*FUNCTION_RGB*/
 
 //Set parameters for variable frequency implementation
 #ifdef FUNCTION_FREQUENCY
@@ -102,11 +130,17 @@
     #define OUTPUT_4_TIMER_SOURCE SOURCE_TIMER_4
     #define TIMER_2_STARTING_VALUE 0
     #define TIMER_4_STARTING_VALUE 128
+    //Brightness
     #define BRIGHTNESS_LEVEL_COUNT 20
     #define BRIGHTNESS_LEVEL_MIN 1
     #define BRIGHTNESS_LEVEL_MAX (BRIGHTNESS_LEVEL_COUNT - 1)
-    #define BRIGHTNESS_LEVELS {0,5,8,12,20,33,54,90,138,165,198,238,286,343,411,493,592,710,853,1023}
-#endif
+    #define BRIGHTNESS_LEVELS {0,16,20,25,32,40,51,64,81,101,128,161,203,256,322,406,512,644,812,1023}
+    //Frequency
+    #define FREQUENCY_LEVEL_COUNT 25
+    #define FREQUENCY_LEVEL_MIN 0
+    #define FREQUENCY_LEVEL_MAX (FREQUENCY_LEVEL_COUNT - 1)
+    #define FREQUENCY_LEVELS {57723, 60328, 61630, 62411, 62932, 63304, 63583, 63800, 63973, 64116, 64234, 64334, 64420, 64494, 64559, 64617, 64668, 64714, 64755, 64792, 64826, 64857, 64885, 64911, 64935}
+#endif /*FUNCTION_FREQUENCY*/
 
 
 #endif	/* CONFIG_H */
