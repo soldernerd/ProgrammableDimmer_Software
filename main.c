@@ -52,20 +52,26 @@ void turn_off(void);
 
 void interrupt _isr(void)
 {
+    #ifdef FUNCTION_FREQUENCY
+        if(PIR1bits.TMR1IF)
+        {
+            timer1_isr();
+            return;
+        }
+    #endif /*FUNCTION_FREQUENCY*/
+
     encoder_isr();
 }
 
 void turn_on(void)
 {
     ENABLE_TRIS = 0;
-    ENABLE_VARIABLE |= ENABLE_MASK;
-    ENABLE_PORT = ENABLE_VARIABLE;
+    ENABLE_PIN = 1;
 }
 
 void turn_off(void)
 {
-    ENABLE_VARIABLE &= ~ENABLE_MASK;
-    ENABLE_PORT = ENABLE_VARIABLE;
+    ENABLE_PIN = 0;
 }
 
 void init(void)

@@ -13,13 +13,17 @@ void pwm_init(void)
 {
     //Configure output pins
     OUTPUT1_TRIS = 0;
-    OUTPUT1_PPS = CCP1_MODULE;
     OUTPUT2_TRIS = 0;
-    OUTPUT2_PPS = CCP2_MODULE;
     OUTPUT3_TRIS = 0;
-    OUTPUT3_PPS = CCP3_MODULE;
     OUTPUT4_TRIS = 0;
+   
+    PPSUnLock()
+    OUTPUT1_PPS = CCP1_MODULE;  
+    OUTPUT2_PPS = CCP2_MODULE;
+    OUTPUT3_PPS = CCP3_MODULE;
     OUTPUT4_PPS = CCP4_MODULE;
+    PPSLock()
+    
     
     //Configure output1 using CCP1
     PR2 = 0xFF; // 10 bits resolution
@@ -83,6 +87,34 @@ void pwm_init(void)
     #ifdef TIMER_6_STARTING_VALUE
         T6CONbits.TMR6ON = 1;
     #endif
+}
+
+void pwm_start(void)
+{
+    CCP1CONbits.CCP1EN = 1; //Module enabled
+    CCP2CONbits.CCP2EN = 1; //Module enabled
+    CCP3CONbits.CCP3EN = 1; //Module enabled
+    CCP4CONbits.CCP4EN = 1; //Module enabled
+    PPSUnLock()
+    OUTPUT1_PPS = CCP1_MODULE;
+    OUTPUT2_PPS = CCP2_MODULE;
+    OUTPUT3_PPS = CCP3_MODULE;
+    OUTPUT4_PPS = CCP4_MODULE;
+    PPSLock()
+}
+
+void pwm_stop(void)
+{
+    CCP1CONbits.CCP1EN = 0; //Module disabled
+    CCP2CONbits.CCP2EN = 0; //Module disabled
+    CCP3CONbits.CCP3EN = 0; //Module disabled
+    CCP4CONbits.CCP4EN = 0; //Module disabled
+    PPSUnLock()
+    OUTPUT1_PPS = OUTPUT_LATCH;
+    OUTPUT2_PPS = OUTPUT_LATCH;
+    OUTPUT3_PPS = OUTPUT_LATCH;
+    OUTPUT4_PPS = OUTPUT_LATCH;
+    PPSLock()
 }
 
 uint16_t pwm_get_dutycycle(PwmChannel_t channel)
