@@ -10,6 +10,7 @@
       <itemPath>function_dualwhite.h</itemPath>
       <itemPath>function_rgb.h</itemPath>
       <itemPath>function_frequency.h</itemPath>
+      <itemPath>function_warmcool.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -24,6 +25,7 @@
       <itemPath>function_dualwhite.c</itemPath>
       <itemPath>function_rgb.c</itemPath>
       <itemPath>function_frequency.c</itemPath>
+      <itemPath>function_warmcool.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

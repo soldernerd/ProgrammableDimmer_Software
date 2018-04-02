@@ -28,6 +28,10 @@
     #include "function_frequency.h"
 #endif
 
+#ifdef FUNCTION_WARMCOOL
+    #include "function_warmcool.h"
+#endif
+
 
 
 //Enable N-FET on pin 13, RA0
@@ -102,5 +106,9 @@ void main(void)
 
     #ifdef FUNCTION_FREQUENCY
         main_loop_frequency();
+    #endif
+
+    #ifdef FUNCTION_WARMCOOL
+        main_loop_warmcool();
     #endif
 }
